@@ -30,17 +30,6 @@ func (s *URLStorageGob) set(key, url string) (bool, error) {
 	return true, e.Encode(record{key, url})
 }
 
-// get is from URLStoreMaps
-//func (s *URLStorageGob) get(key, url string) error {
-//	e := gob.NewEncoder(s.file)
-//	return e.Encode(record{key, url})
-//}
-// count is from URLStoreMaps
-//func (s *URLStorageGob) count(key, url string) error {
-//	e := gob.NewEncoder(s.file)
-//	return e.Encode(record{key, url})
-//}
-
 func (s *URLStorageGob) save(key, url string) error {
 	e := gob.NewEncoder(s.file)
 	return e.Encode(record{key, url})
@@ -50,6 +39,7 @@ func (s *URLStorageGob) load() error {
 	if _, err := s.file.Seek(0, 0); err != nil {
 		return err
 	}
+	// TODO make json OR gob encoder, similar to save to chan. OR it's causing lost of prev data on startup for JSON format.
 	d := gob.NewDecoder(s.file)
 	var err error
 	for err == nil {

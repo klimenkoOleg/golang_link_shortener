@@ -1,9 +1,10 @@
 package main
 
-func (s *URLStoreMaps) get(key string) string {
+func (s *URLStoreMaps) get(key string) (val string, isPresent bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	return s.urls[key]
+	val, isPresent = s.urls[key]
+	return
 }
 
 func (s *URLStoreMaps) set(key, url string) (bool, error) {
