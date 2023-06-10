@@ -1,11 +1,15 @@
 package main
 
+import "sync/atomic"
+
 type Shortener struct {
 	store URLStore
+	count int64
 }
 
 func (s *Shortener) Get(key string) string {
-	return s.store.get(key)
+	url, _ := s.store.get(key)
+	return url
 }
 
 /*func (s *Shortener) Put(url string) string {
@@ -20,7 +24,7 @@ func (s *Shortener) Get(key string) string {
 
 func (s *Shortener) Put(url string) (string, error) {
 	for {
-		key := genKey(s.store.count())
+		key := genKey(s.count)
 		ok, err := s.store.set(key, url)
 		if err != nil {
 			return "", err
@@ -28,6 +32,7 @@ func (s *Shortener) Put(url string) (string, error) {
 		if ok {
 			return key, nil
 		}
+		atomic.AddInt64(&s.count, 1)
 	}
-	panic("shouldn't get here")
+	panic("shouldn't get here, shortener")
 }
